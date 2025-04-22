@@ -3,14 +3,18 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const dotenv = require('dotenv');
+const connectDB = require('./config/db');
 
 // Importando as rotas
 const usuarioRoutes = require('./routes/usuario');
 const authRoutes = require('./routes/auth');
 const casoRoutes = require('./routes/caso');
 
-// Conectando ao banco de dados
-const connectDB = require('./config/db');
+// Carregar variavel de ambiente
+dotenv.config();
+
+// Connect banco de dados
 connectDB();
 
 // Inicializando o app

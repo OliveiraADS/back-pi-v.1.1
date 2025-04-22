@@ -1,13 +1,9 @@
-// ================ config/db.js ================
 const mongoose = require('mongoose');
+mongoose.set('strictQuery', false);
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect('mongodb+srv://odontolegal:odontolegal123@odonto-legal.bllxerk.mongodb.net/?retryWrites=true&w=majority&appName=odonto-legal', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
-    
+    const conn = await mongoose.connect(process.env.MONGO_URI);
     console.log(`MongoDB conectado: ${conn.connection.host}`);
   } catch (error) {
     console.error(`Erro: ${error.message}`);
