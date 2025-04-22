@@ -1,4 +1,4 @@
-// app.js ou src/app.js
+//src/app.js
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -18,7 +18,9 @@ const app = express();
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
+
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 // Usando as rotas
 app.use('/api/usuarios', usuarioRoutes);
