@@ -162,3 +162,38 @@ exports.buscarPorStatus = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+// Buscar casos por responsável e status
+exports.buscarPorResponsavelEStatus = async (req, res) => {
+  try {
+    const { idResponsavel, statusCaso } = req.params;
+    
+    // Verificar se o status é válido
+    if (!['Em andamento', 'Arquivado', 'Finalizado'].includes(statusCaso)) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Status inválido. Use: Em andamento, Arquivado ou Finalizado' 
+      });
+    }
+    
+    // Log para depuração
+    console.log(`Buscando casos com responsável: ${idResponsavel} e status: ${statusCaso}`);
+    
+    // Buscar casos onde o responsável é o ID fornecido e o status corresponde
+    const casos = await Caso.find({ 
+      responsavel_caso: idResponsavel,
+      status_caso: statusCaso 
+    });
+    
+    // Log do resultado para depuração
+    console.log(`Total de casos encontrados: ${casos.length}`);
+    
+    res.status(200).json({ 
+      success: true, 
+      data: casos 
+    });
+  } catch (error) {
+    console.error('Erro ao buscar casos por responsável e status:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
