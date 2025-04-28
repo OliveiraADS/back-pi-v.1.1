@@ -1,4 +1,5 @@
 // controllers/casoController.js
+const mongoose = require('mongoose');
 const Caso = require('../models/Caso');
 
 // Buscar todos os casos
@@ -196,6 +197,78 @@ exports.buscarPorStatus = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// @desc    Criar caso com evidências
+// @route   POST /api/casos/com-evidencias
+// @access  Private
+exports.criarCasoComEvidencias = async (req, res) => {
+  // Iniciar uma sessão para transação
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const { caso, evidencias } = req.body;
+    
+    // Criar o caso
+    const novoCaso = await Caso.create([caso], { session });
+    
+    // Verificar se o caso foi criado
+    if (!novoCaso || novoCaso.length === 0) {
+      throw new Error('Falha ao criar o caso');
+    }
+    
+    const casoId = novoCaso[0]._id;
+    
+    if (evidencias && evidencias.length > 0) {
+      // Carregar o modelo de Evidencia
+      const Evidencia = mongoose.model('Evidencia');
+      
+      // Preparar as evidências com o ID do caso
+      const evidenciasComCaso = evidencias.map(evidencia => ({
+        ...evidencia,
+        id_caso: casoId
+      }));
+      
+      // Criar as evidências
+      const novasEvidencias = await Evidencia.create(evidenciasComCaso, { session });
+      
+      // Confirmar a transação
+      await session.commitTransaction();
+      session.endSession();
+      
+      res.status(201).json({
+        sucesso: true,
+        mensagem: 'Caso e evidências criados com sucesso',
+        dados: {
+          caso: novoCaso[0],
+          evidencias: novasEvidencias
+        }
+      });
+    } else {
+      // Se não houver evidências, apenas confirmar a transação do caso
+      await session.commitTransaction();
+      session.endSession();
+      
+      res.status(201).json({
+        sucesso: true,
+        mensagem: 'Caso criado com sucesso',
+        dados: {
+          caso: novoCaso[0]
+        }
+      });
+    }
+    
+  } catch (error) {
+    // Abortar a transação em caso de erro
+    await session.abortTransaction();
+    session.endSession();
+    
+    res.status(400).json({
+      sucesso: false,
+      mensagem: error.message
+    });
   }
 };
 

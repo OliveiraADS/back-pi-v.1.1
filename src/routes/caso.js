@@ -14,4 +14,6 @@ router.delete('/:id', casoController.excluir);
 // Adicionar esta nova rota - Buscar ID de usuario e Status do caso 
 router.get('/responsavel/:idResponsavel/status/:statusCaso', casoController.buscarPorResponsavelEStatus);
 
+router.post('/com-evidencias', casoController.criarCasoComEvidencias);
+
 module.exports = router;
