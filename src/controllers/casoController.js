@@ -35,13 +35,26 @@ exports.criar = async (req, res) => {
       processo_caso,
       data_abertura_caso,
       descricao_caso,
-      status_caso
+      status_caso,
+      // Novos campos da vítima
+      nome_completo_vitima_caso,
+      data_nac_vitima_caso,
+      sexo_vitima_caso,
+      observacao_vitima_caso
     } = req.body;
     
     if (!titulo_caso || !responsavel_caso) {
       return res.status(400).json({ 
         success: false, 
         error: 'Por favor, forneça pelo menos título e responsável pelo caso' 
+      });
+    }
+    
+    // Verificar se o sexo da vítima é válido, se fornecido
+    if (sexo_vitima_caso && !['M', 'F', ''].includes(sexo_vitima_caso)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Sexo inválido. Use: M para masculino ou F para feminino'
       });
     }
     
@@ -59,7 +72,12 @@ exports.criar = async (req, res) => {
       processo_caso,
       data_abertura_caso: data_abertura_caso || Date.now(),
       descricao_caso,
-      status_caso: status_caso || 'Em andamento'
+      status_caso: status_caso || 'Em andamento',
+      // Novos campos da vítima
+      nome_completo_vitima_caso,
+      data_nac_vitima_caso,
+      sexo_vitima_caso,
+      observacao_vitima_caso
     });
     
     await novoCaso.save();
@@ -83,7 +101,12 @@ exports.atualizar = async (req, res) => {
       processo_caso,
       data_abertura_caso,
       descricao_caso,
-      status_caso
+      status_caso,
+      // Novos campos da vítima
+      nome_completo_vitima_caso,
+      data_nac_vitima_caso,
+      sexo_vitima_caso,
+      observacao_vitima_caso
     } = req.body;
 
     // Verifica se o status é válido
@@ -91,6 +114,14 @@ exports.atualizar = async (req, res) => {
       return res.status(400).json({ 
         success: false, 
         error: 'Status inválido. Use: Em andamento, Arquivado ou Finalizado' 
+      });
+    }
+    
+    // Verificar se o sexo da vítima é válido, se fornecido
+    if (sexo_vitima_caso && !['M', 'F', ''].includes(sexo_vitima_caso)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Sexo inválido. Use: M para masculino ou F para feminino'
       });
     }
     
@@ -102,7 +133,12 @@ exports.atualizar = async (req, res) => {
         processo_caso,
         data_abertura_caso,
         descricao_caso,
-        status_caso
+        status_caso,
+        // Novos campos da vítima
+        nome_completo_vitima_caso,
+        data_nac_vitima_caso,
+        sexo_vitima_caso,
+        observacao_vitima_caso
       },
       { new: true, runValidators: true }
     );

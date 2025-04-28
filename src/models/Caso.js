@@ -34,6 +34,27 @@ const CasoSchema = new mongoose.Schema({
     enum: ['Em andamento', 'Arquivado', 'Finalizado'],
     default: 'Em andamento'
   },
+  // Novos campos relacionados à vítima
+  nome_completo_vitima_caso: {
+    type: String,
+    default: "Nome não informado",
+    trim: true
+  },
+  data_nac_vitima_caso: {
+    type: Date,
+    default: null
+  },
+  sexo_vitima_caso: {
+    type: String,
+    enum: ['M', 'F', ''],
+    default: '',
+    trim: true
+  },
+  observacao_vitima_caso: {
+    type: String,
+    default: '',
+    trim: true
+  },
   data_criacao: {
     type: Date,
     default: Date.now
