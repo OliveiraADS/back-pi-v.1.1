@@ -10,6 +10,8 @@ const connectDB = require('./config/db');
 const usuarioRoutes = require('./routes/usuario');
 const authRoutes = require('./routes/auth');
 const casoRoutes = require('./routes/caso');
+// Nova importação para as rotas de evidência
+const evidenciaRoutes = require('./routes/evidencia');
 
 // Carregar variavel de ambiente
 dotenv.config();
@@ -23,13 +25,16 @@ const app = express();
 // Middleware
 app.use(cors());
 
-app.use(bodyParser.json({ limit: '10mb' }));
-app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
+// Aumentar o limite para permitir imagens em base64
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // Usando as rotas
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/casos', casoRoutes);
+// Adicionar as novas rotas de evidência
+app.use('/api/evidencias', evidenciaRoutes);
 
 // Porta do servidor
 const PORT = process.env.PORT || 5000;
